@@ -1,0 +1,5 @@
+^renv$
+^renv\.lock$
+^odsdata\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$

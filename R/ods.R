@@ -85,7 +85,7 @@ fetch_and_join_ods <- function(data, org_code_col,
   # join org data back to original dataframe
   result <- data |>
     dplyr::left_join(
-      orgs, by = dplyr::join_by(!!rlang::sym(org_code_col) == .data$org_code)
+      orgs, by = dplyr::join_by(!!rlang::sym(org_code_col) == y$org_code)
     )
 
   # optionally filter to English and unknown organisations

@@ -7,7 +7,7 @@
 get_ods_orgs(org_code)
 }
 \arguments{
-\item{org_code}{A list of organisation codes}
+\item{org_code}{A single organisation code}
 }
 \value{
 Dataframe with organisation data

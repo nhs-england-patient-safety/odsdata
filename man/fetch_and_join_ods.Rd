@@ -13,7 +13,7 @@ fetch_and_join_ods(data, org_code_col, english_only = TRUE, include_cols = "")
 
 \item{english_only}{Logical. Filter to include English (and N/A) organisations}
 
-\item{include_cols}{Character. ODS columns to include (default includes \code{org_name}, \code{org_type}, and \code{org_country})}
+\item{include_cols}{Character. ODS columns to include (\code{org_name}, \code{org_type}, \code{org_country}, \code{org_region_code}, \code{org_region})}
 }
 \value{
 Original dataframe with organisation data joined on

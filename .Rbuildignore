@@ -5,3 +5,5 @@
 ^LICENSE\.md$
 ^dev$
 ^data-raw$
+^\.vscode$
+^[.]?air[.]toml$

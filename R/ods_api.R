@@ -6,9 +6,9 @@ ods_base_url <- "https://api.service.nhs.uk/organisation-data-terminology-api/fh
 # run in parallel at or above this many codes
 ods_parallel_threshold <- 250
 
-# Get the API key, stopping if it isn't set
-#
-# @noRd
+#' Get the API key, stopping if it isn't set
+#'
+#' @noRd
 ods_api_key <- function() {
   api_key <- Sys.getenv("ods_key")
 
@@ -19,20 +19,20 @@ ods_api_key <- function() {
   api_key
 }
 
-# Look up many codes in one CodeSystem
-#
-# @param system URI of the CodeSystem
-# @param codes Character vector of codes (NA and duplicates are dropped)
-# @param properties Named character vector of properties to return. Names are the
-#   output column names, values are the API property names, e.g. c(org_country = "country")
-# @param label What the codes are, for messages about codes that could not be retrieved
-#   (e.g. "org code")
-# @param on_missing One of "warn", "error" or "silent"
-#
-# @return Dataframe with one row per unique code: `code`, `name`, and one column per property.
-#   Codes that could not be retrieved have NA in every column except `code`.
-#
-# @noRd
+#' Look up many codes in one CodeSystem
+#'
+#' @param system URI of the CodeSystem
+#' @param codes Character vector of codes (NA and duplicates are dropped)
+#' @param properties Named character vector of properties to return. Names are the
+#'   output column names, values are the API property names, e.g. c(org_country = "country")
+#' @param label What the codes are, for messages about codes that could not be retrieved
+#'   (e.g. "org code")
+#' @param on_missing One of "warn", "error" or "silent"
+#'
+#' @return Dataframe with one row per unique code: `code`, `name`, and one column per property.
+#'   Codes that could not be retrieved have NA in every column except `code`.
+#'
+#' @noRd
 ods_lookup_codes <- function(
   system,
   codes,
@@ -74,9 +74,9 @@ ods_lookup_codes <- function(
   dplyr::select(results, -dplyr::all_of(c("status", "detail")))
 }
 
-# Look up one code
-#
-# @noRd
+#' Look up one code
+#'
+#' @noRd
 ods_lookup_one <- function(api_key, system, code, properties) {
   tryCatch(
     {
@@ -121,9 +121,9 @@ ods_lookup_one <- function(api_key, system, code, properties) {
   )
 }
 
-# One row with every field missing, for codes that could not be retrieved
-#
-# @noRd
+#' One row with every field missing, for codes that could not be retrieved
+#'
+#' @noRd
 ods_blank_row <- function(code, properties, status, detail = NA_character_) {
   blanks <- rep(list(NA_character_), length(properties))
   names(blanks) <- names(properties)
@@ -137,13 +137,13 @@ ods_blank_row <- function(code, properties, status, detail = NA_character_) {
   )
 }
 
-# Handle codes that could not be retrieved, according to on_missing
-#
-# @param results Dataframe from ods_lookup_one() calls, including status and detail columns
-# @param label What the codes are, for messages (e.g. "org code")
-# @param on_missing One of "warn", "error" or "silent"
-#
-# @noRd
+#' Handle codes that could not be retrieved, according to on_missing
+#'
+#' @param results Dataframe from ods_lookup_one() calls, including status and detail columns
+#' @param label What the codes are, for messages (e.g. "org code")
+#' @param on_missing One of "warn", "error" or "silent"
+#'
+#' @noRd
 report_missing_lookups <- function(results, label, on_missing) {
   # every request failed: points to a key or connection problem, so stop whatever on_missing is
   if (nrow(results) > 0 && all(results$status == "failed")) {
@@ -217,10 +217,10 @@ extract_ods_display <- function(response) {
     purrr::pluck("valueString", .default = NA_character_)
 }
 
-# Pull a property's value out of a $lookup response
-# Coded properties (NHSER, primaryRole) come back as valueCoding, others (country) as valueString
-#
-# @noRd
+#' Pull a property's value out of a $lookup response
+#' Coded properties (NHSER, primaryRole) come back as valueCoding, others (country) as valueString
+#'
+#' @noRd
 extract_ods_property <- function(response, property) {
   for (p in response$parameter) {
     if (!identical(p$name, "property")) {

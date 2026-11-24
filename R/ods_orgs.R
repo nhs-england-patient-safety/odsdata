@@ -1,5 +1,5 @@
 # ODS Organisations
-# Knows which ODS CodeSystems and properties give which organisation fields.
+# Navigate ODS CodeSystems and properties for pulling organisation data from the ODS API
 
 ods_org_system <- "https://fhir.nhs.uk/Id/ods-organization-code"
 ods_role_system <- "https://digital.nhs.uk/services/organisation-data-service/CodeSystem/ODSOrganisationRole"
@@ -13,16 +13,16 @@ ods_org_fields <- c(
   "org_region"
 )
 
-# Look up organisation details for a vector of ODS codes
-#
-# @param org_codes Character vector of ODS codes (NA and duplicates are dropped)
-# @param fields Character. Which of `ods_org_fields` to return
-# @param on_missing One of "warn", "error" or "silent"
-#
-# @return Dataframe with `org_code` and one column per requested field,
-#   one row per unique code
-#
-# @noRd
+#' Look up organisation details for a vector of ODS codes
+#'
+#' @param org_codes Character vector of ODS codes (NA and duplicates are dropped)
+#' @param fields Character. Which of `ods_org_fields` to return
+#' @param on_missing One of "warn", "error" or "silent"
+#'
+#' @return Dataframe with `org_code` and one column per requested field,
+#'   one row per unique code
+#'
+#' @noRd
 ods_lookup_orgs <- function(
   org_codes,
   fields = ods_org_fields,
@@ -69,11 +69,11 @@ ods_lookup_orgs <- function(
   dplyr::select(orgs, "org_code", dplyr::all_of(fields))
 }
 
-# Turn a vector of codes into their names, one lookup per distinct code
-#
-# @return Character vector the same length as `codes`; NA codes give NA
-#
-# @noRd
+#' Turn a vector of codes into their names, one lookup per distinct code
+#'
+#' @return Character vector the same length as `codes`; NA codes give NA
+#'
+#' @noRd
 ods_names_for <- function(codes, system, label, on_missing) {
   looked_up <- ods_lookup_codes(
     system,

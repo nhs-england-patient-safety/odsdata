@@ -1,6 +1,5 @@
 # ODS Fetch
-# Adds ODS organisation fields to a dataframe. This file only deals with the user's data
-# (checking, filtering, joining back); everything about the API is in ods-orgs.R and ods-api.R.
+# Add ODS organisation fields to a dataframe, fetching from the ODS API
 
 #' Fetch and join ODS organisation data to a dataset
 #'

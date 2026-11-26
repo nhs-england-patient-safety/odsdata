@@ -4,10 +4,14 @@
 #' Fetch and join ODS organisation data to a dataset
 #'
 #' @param data A dataframe containing organisation codes
-#' @param org_code_col Column containing organisation code (e.g., 'ReporterOrganisationCode', 'RP07', 'reporting_organisation_code')
+#' @param org_code_col Column containing organisation code (e.g., 'ReporterOrganisationCode', 'RP07')
 #' @param english_only Logical. Filter to include English (and N/A) organisations
-#' @param include_cols Character. ODS columns to add (`org_name`, `org_type`, `org_country`, `org_region_code`, `org_region`).
-#'   Default adds none.
+#' @param include_cols Character. ODS columns to add. Default adds all. Choose from:
+#'   `org_name`, `org_type`, `org_country`, `org_region_code`, `org_region`;
+#'   the dates `org_legal_start`, `org_legal_end`, `org_operational_start` and `org_operational_end`;
+#'   and `org_successors`, a list column holding the codes of the organisation's immediate
+#'   successors (empty if none). A legal end date shows that an organisation has closed.
+#'   ODS often gives start dates a default of 1 April or 1 October.
 #' @param on_missing Character. What to do when codes are not found in ODS or the request fails:
 #'   `"warn"` (default) warns and carries on, `"error"` stops, `"silent"` does nothing.
 #'   Missing codes get NA values unless `"error"` is used. If every request fails, the function stops regardless.
@@ -15,11 +19,23 @@
 #' @return Original dataframe with organisation data joined on
 #'
 #' @export
+
 fetch_and_join_ods <- function(
   data,
   org_code_col,
   english_only = TRUE,
-  include_cols = character(),
+  include_cols = c(
+    "org_name",
+    "org_type",
+    "org_country",
+    "org_region_code",
+    "org_region",
+    "org_legal_start",
+    "org_legal_end",
+    "org_operational_start",
+    "org_operational_end",
+    "org_successors"
+  ),
   on_missing = c("warn", "error", "silent")
 ) {
   # validate before any API calls are made

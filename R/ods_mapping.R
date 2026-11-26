@@ -21,9 +21,7 @@
 #' @param to Character. Column in `mapping` holding the ODS codes (default: the first
 #'   column of `mapping` not used in `by`)
 #' @param ods_col Character. Name of the column added to `data` to hold the resulting ODS codes
-#' @param english_only Logical. Filter to include English (and N/A) organisations
-#' @param include_cols Character. ODS columns to add (`org_name`, `org_type`, `org_country`, `org_region_code`, `org_region`).
-#'   Default adds none.
+#' @inheritParams fetch_and_join_ods
 #' @param on_missing Character. What to do when codes are ambiguous, not found in ODS, or the
 #'   request fails: `"warn"` (default) warns and carries on, `"error"` stops, `"silent"` does nothing.
 #'
@@ -37,7 +35,18 @@ map_to_ods_codes <- function(
   to = setdiff(names(mapping), by)[1],
   ods_col = "ods_org_code",
   english_only = TRUE,
-  include_cols = character(),
+  include_cols = c(
+    "org_name",
+    "org_type",
+    "org_country",
+    "org_region_code",
+    "org_region",
+    "org_legal_start",
+    "org_legal_end",
+    "org_operational_start",
+    "org_operational_end",
+    "org_successors"
+  ),
   on_missing = c("warn", "error", "silent")
 ) {
   # resolve to a single value before passing on

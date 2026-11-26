@@ -8,6 +8,13 @@
 \description{
 Convenience functions for working with ODS data and the NHS ODT FHIR API.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://nhs-england-patient-safety.github.io/odsdata/}
+}
+
+}
 \author{
 \strong{Maintainer}: Paul Johnson \email{paul.johnson50@nhs.net}
 

@@ -10,9 +10,7 @@
 #' @param data A dataframe containing StEIS organisation codes
 #' @param org_code_col Column containing organisation code (e.g., 'Reporting Organisation Code')
 #' @param org_name_col Column containing the organisation name (e.g., 'Reporting Organisation'), or NULL
-#' @param english_only Logical. Filter to include English (and N/A) organisations
-#' @param include_cols Character. ODS columns to add (`org_name`, `org_type`, `org_country`, `org_region_code`, `org_region`).
-#'   Default adds none.
+#' @inheritParams fetch_and_join_ods
 #' @param on_missing Character. What to do when codes are ambiguous, not found in ODS, or the
 #'   request fails: `"warn"` (default) warns and carries on, `"error"` stops, `"silent"` does nothing.
 #'
@@ -24,7 +22,18 @@ map_steis_org_codes <- function(
   org_code_col,
   org_name_col = NULL,
   english_only = TRUE,
-  include_cols = character(),
+  include_cols = c(
+    "org_name",
+    "org_type",
+    "org_country",
+    "org_region_code",
+    "org_region",
+    "org_legal_start",
+    "org_legal_end",
+    "org_operational_start",
+    "org_operational_end",
+    "org_successors"
+  ),
   on_missing = c("warn", "error", "silent")
 ) {
   on_missing <- match.arg(on_missing)

@@ -8,19 +8,25 @@ fetch_and_join_ods(
   data,
   org_code_col,
   english_only = TRUE,
-  include_cols = character(),
+  include_cols = c("org_name", "org_type", "org_country", "org_region_code",
+    "org_region", "org_legal_start", "org_legal_end", "org_operational_start",
+    "org_operational_end", "org_successors"),
   on_missing = c("warn", "error", "silent")
 )
 }
 \arguments{
 \item{data}{A dataframe containing organisation codes}
 
-\item{org_code_col}{Column containing organisation code (e.g., 'ReporterOrganisationCode', 'RP07', 'reporting_organisation_code')}
+\item{org_code_col}{Column containing organisation code (e.g., 'ReporterOrganisationCode', 'RP07')}
 
 \item{english_only}{Logical. Filter to include English (and N/A) organisations}
 
-\item{include_cols}{Character. ODS columns to add (\code{org_name}, \code{org_type}, \code{org_country}, \code{org_region_code}, \code{org_region}).
-Default adds none.}
+\item{include_cols}{Character. ODS columns to add. Default adds all. Choose from:
+\code{org_name}, \code{org_type}, \code{org_country}, \code{org_region_code}, \code{org_region};
+the dates \code{org_legal_start}, \code{org_legal_end}, \code{org_operational_start} and \code{org_operational_end};
+and \code{org_successors}, a list column holding the codes of the organisation's immediate
+successors (empty if none). A legal end date shows that an organisation has closed.
+ODS often gives start dates a default of 1 April or 1 October.}
 
 \item{on_missing}{Character. What to do when codes are not found in ODS or the request fails:
 \code{"warn"} (default) warns and carries on, \code{"error"} stops, \code{"silent"} does nothing.

@@ -10,7 +10,20 @@ ods_org_fields <- c(
   "org_type",
   "org_country",
   "org_region_code",
-  "org_region"
+  "org_region",
+  "org_legal_start",
+  "org_legal_end",
+  "org_operational_start",
+  "org_operational_end",
+  "org_successors"
+)
+
+# fields that come back from the API as text but are dates
+ods_date_fields <- c(
+  "org_legal_start",
+  "org_legal_end",
+  "org_operational_start",
+  "org_operational_end"
 )
 
 #' Look up organisation details for a vector of ODS codes
@@ -31,20 +44,29 @@ ods_lookup_orgs <- function(
   n_codes <- dplyr::n_distinct(org_codes, na.rm = TRUE)
   message(glue::glue("{n_codes} unique org codes to process."))
 
-  # name, country, primary role and region code all come from one call per code
+  # everything except the role and region names comes from one call per code
   orgs <- ods_lookup_codes(
     ods_org_system,
     org_codes,
     properties = c(
       org_type_code = "primaryRole",
       org_country = "country",
-      org_region_code = "NHSER"
+      org_region_code = "NHSER",
+      org_legal_start = "legStartDate",
+      org_legal_end = "legEndDate",
+      org_operational_start = "opStartDate",
+      org_operational_end = "opEndDate",
+      org_successors = "successor"
     ),
+    multi = "org_successors",
     label = "org code",
     on_missing = on_missing
   )
 
   orgs <- dplyr::rename(orgs, org_code = "code", org_name = "name")
+
+  # dates come back as text (YYYY-MM-DD)
+  orgs[ods_date_fields] <- purrr::map(orgs[ods_date_fields], as.Date)
 
   # role and region names are separate lookups, one call per distinct code, only when asked for
   if ("org_type" %in% fields) {

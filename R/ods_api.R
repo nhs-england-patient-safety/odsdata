@@ -25,27 +25,34 @@ ods_api_key <- function() {
 #' @param codes Character vector of codes (NA and duplicates are dropped)
 #' @param properties Named character vector of properties to return. Names are the
 #'   output column names, values are the API property names, e.g. c(org_country = "country")
+#' @param multi Character. Names from `properties` whose column should hold every value as a
+#'   list column, for properties that can repeat (e.g. successors). Other columns hold the
+#'   first value only.
 #' @param label What the codes are, for messages about codes that could not be retrieved
 #'   (e.g. "org code")
 #' @param on_missing One of "warn", "error" or "silent"
 #'
 #' @return Dataframe with one row per unique code: `code`, `name`, and one column per property.
-#'   Codes that could not be retrieved have NA in every column except `code`.
+#'   Codes that could not be retrieved have NA in every column except `code` (and an empty
+#'   vector in list columns)
 #'
 #' @noRd
 ods_lookup_codes <- function(
   system,
   codes,
   properties = character(),
+  multi = character(),
   label = "code",
   on_missing = "warn"
 ) {
+  stopifnot(all(multi %in% names(properties)))
+
   # read the key once here so a missing key fails once, not once per code
   api_key <- ods_api_key()
 
   codes <- unique(codes[!is.na(codes)])
 
-  lookup_one <- \(code) ods_lookup_one(api_key, system, code, properties)
+  lookup_one <- \(code) ods_lookup_one(api_key, system, code, properties, multi)
 
   # use furrr if over threshold, otherwise purrr
   if (length(codes) >= ods_parallel_threshold) {
@@ -65,7 +72,7 @@ ods_lookup_codes <- function(
 
   # list_rbind() on an empty list returns a tibble with no columns, so give it the expected shape
   if (nrow(results) == 0) {
-    results <- ods_blank_row("", properties, "ok")[0, ]
+    results <- ods_blank_row("", properties, multi, "ok")[0, ]
   }
 
   report_missing_lookups(results, label, on_missing)
@@ -77,7 +84,7 @@ ods_lookup_codes <- function(
 #' Look up one code
 #'
 #' @noRd
-ods_lookup_one <- function(api_key, system, code, properties) {
+ods_lookup_one <- function(api_key, system, code, properties, multi) {
   tryCatch(
     {
       req <- httr2::request(ods_base_url) |>
@@ -100,7 +107,12 @@ ods_lookup_one <- function(api_key, system, code, properties) {
         httr2::req_perform() |>
         httr2::resp_body_json()
 
-      values <- purrr::map(properties, \(p) extract_ods_property(response, p))
+      values <- purrr::imap(properties, \(property, column) {
+        found <- extract_ods_property(response, property)
+
+        # a property that can repeat keeps every value as a list column; others keep the first
+        if (column %in% multi) list(found) else found[1]
+      })
 
       dplyr::tibble(
         code = code,
@@ -113,10 +125,10 @@ ods_lookup_one <- function(api_key, system, code, properties) {
     },
     # handlers are tried in order, so a 404 is caught before the general error
     httr2_http_404 = function(e) {
-      ods_blank_row(code, properties, "not_found")
+      ods_blank_row(code, properties, multi, "not_found")
     },
     error = function(e) {
-      ods_blank_row(code, properties, "failed", conditionMessage(e))
+      ods_blank_row(code, properties, multi, "failed", conditionMessage(e))
     }
   )
 }
@@ -124,9 +136,16 @@ ods_lookup_one <- function(api_key, system, code, properties) {
 #' One row with every field missing, for codes that could not be retrieved
 #'
 #' @noRd
-ods_blank_row <- function(code, properties, status, detail = NA_character_) {
-  blanks <- rep(list(NA_character_), length(properties))
-  names(blanks) <- names(properties)
+ods_blank_row <- function(
+  code,
+  properties,
+  multi,
+  status,
+  detail = NA_character_
+) {
+  blanks <- purrr::imap(properties, \(property, column) {
+    if (column %in% multi) list(character()) else NA_character_
+  })
 
   dplyr::tibble(
     code = code,
@@ -239,3 +258,31 @@ extract_ods_property <- function(response, property) {
   }
   NA_character_
 }
+
+#' Pull every value of a property out of a $lookup response
+#' A property can appear more than once (e.g. predecessors, successors), and its value
+#' sits under a type-specific name (valueCode, valueString, valueDateTime, valueCoding, ...)
+#'
+#' @return Character vector, one element per occurrence; length 0 if the property is absent
+#'
+#' @noRd
+extract_ods_property <- function(response, property) {
+  matches <- purrr::keep(response$parameter, \(p) {
+    identical(p$name, "property") &&
+      identical(
+        purrr::detect(p$part, \(x) identical(x$name, "code"))$valueCode,
+        property
+      )
+  })
+
+  purrr::map_chr(matches, \(p) {
+    val <- purrr::detect(p$part, \(x) identical(x$name, "value"))
+    v <- purrr::pluck(val[setdiff(names(val), "name")], 1, .default = NA_character_)
+
+    # coded values (valueCoding) hold the code
+    as.character(
+      if (is.list(v)) purrr::pluck(v, "code", .default = NA_character_) else v
+    )
+  })
+}
+

@@ -58,15 +58,9 @@
 <code class="sourceCode R"><span><span class="co"># the API key is read from an environment variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ods_key <span class="op">=</span> <span class="st">"your-key-here"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">orgs</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  org_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RR8"</span>, <span class="st">"RX1"</span>, <span class="st">"NQV"</span>, <span class="st">"RWX"</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">orgs</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>org_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RR8"</span>, <span class="st">"RX1"</span>, <span class="st">"NQV"</span>, <span class="st">"RWX"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/fetch_and_join_ods.html">fetch_and_join_ods</a></span><span class="op">(</span></span>
-<span>  <span class="va">orgs</span>,</span>
-<span>  <span class="st">"org_code"</span>,</span>
-<span>  include_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"org_name"</span>, <span class="st">"org_type"</span>, <span class="st">"org_region_code"</span>, <span class="st">"org_region"</span>, <span class="st">"org_country"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/fetch_and_join_ods.html">fetch_and_join_ods</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">orgs</span>, org_code_col <span class="op">=</span> <span class="st">"org_code"</span><span class="op">)</span></span></code></pre></div>
 <p>You get your original data back with the extra columns added on the right.</p>
 <p>If your data holds codes from another source, map them to ODS codes with a table first:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -77,7 +71,7 @@
 <span></span>
 <span><span class="va">sites</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"A3"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/map_to_ods_codes.html">map_to_ods_codes</a></span><span class="op">(</span><span class="va">sites</span>, <span class="va">mapping</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"local_code"</span><span class="op">)</span>, include_cols <span class="op">=</span> <span class="st">"org_name"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/map_to_ods_codes.html">map_to_ods_codes</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sites</span>, mapping <span class="op">=</span> <span class="va">mapping</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"local_code"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="organisation-data-terminology-api">Organisation Data Terminology API<a class="anchor" aria-label="anchor" href="#organisation-data-terminology-api"></a>

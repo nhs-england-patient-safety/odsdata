@@ -19,15 +19,9 @@ To fetch ODS organisation details from the API:
 # the API key is read from an environment variable
 Sys.setenv(ods_key = "your-key-here")
 
-orgs <- dplyr::tibble(
-  org_code = c("RR8", "RX1", "NQV", "RWX", NA)
-)
+orgs <- dplyr::tibble(org_code = c("RR8", "RX1", "NQV", "RWX", NA))
 
-fetch_and_join_ods(
-  orgs,
-  "org_code",
-  include_cols = c("org_name", "org_type", "org_region_code", "org_region", "org_country")
-)
+fetch_and_join_ods(data = orgs, org_code_col = "org_code")
 ```
 
 You get your original data back with the extra columns added on the
@@ -45,7 +39,7 @@ mapping <- dplyr::tibble(
 
 sites <- dplyr::tibble(code = c("A1", "A2", "B1", "A3", NA))
 
-map_to_ods_codes(sites, mapping, by = c(code = "local_code"), include_cols = "org_name")
+map_to_ods_codes(data = sites, mapping = mapping, by = c(code = "local_code"))
 ```
 
 ## Organisation Data Terminology API

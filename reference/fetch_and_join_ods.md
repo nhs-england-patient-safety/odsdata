@@ -9,7 +9,9 @@ fetch_and_join_ods(
   data,
   org_code_col,
   english_only = TRUE,
-  include_cols = character(),
+  include_cols = c("org_name", "org_type", "org_country", "org_region_code",
+    "org_region", "org_legal_start", "org_legal_end", "org_operational_start",
+    "org_operational_end", "org_successors"),
   on_missing = c("warn", "error", "silent")
 )
 ```
@@ -23,7 +25,7 @@ fetch_and_join_ods(
 - org_code_col:
 
   Column containing organisation code (e.g., 'ReporterOrganisationCode',
-  'RP07', 'reporting_organisation_code')
+  'RP07')
 
 - english_only:
 
@@ -31,8 +33,14 @@ fetch_and_join_ods(
 
 - include_cols:
 
-  Character. ODS columns to add (`org_name`, `org_type`, `org_country`,
-  `org_region_code`, `org_region`). Default adds none.
+  Character. ODS columns to add. Default adds all. Choose from:
+  `org_name`, `org_type`, `org_country`, `org_region_code`,
+  `org_region`; the dates `org_legal_start`, `org_legal_end`,
+  `org_operational_start` and `org_operational_end`; and
+  `org_successors`, a list column holding the codes of the
+  organisation's immediate successors (empty if none). A legal end date
+  shows that an organisation has closed. ODS often gives start dates a
+  default of 1 April or 1 October.
 
 - on_missing:
 

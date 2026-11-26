@@ -53,7 +53,9 @@ the source code alone, if the table gives only one ODS code
 <span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mapping</span><span class="op">)</span>, <span class="va">by</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  ods_col <span class="op">=</span> <span class="st">"ods_org_code"</span>,</span>
 <span>  english_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  include_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  include_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"org_name"</span>, <span class="st">"org_type"</span>, <span class="st">"org_country"</span>, <span class="st">"org_region_code"</span>,</span>
+<span>    <span class="st">"org_region"</span>, <span class="st">"org_legal_start"</span>, <span class="st">"org_legal_end"</span>, <span class="st">"org_operational_start"</span>,</span>
+<span>    <span class="st">"org_operational_end"</span>, <span class="st">"org_successors"</span><span class="op">)</span>,</span>
 <span>  on_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warn"</span>, <span class="st">"error"</span>, <span class="st">"silent"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,8 +94,12 @@ column of <code>mapping</code> not used in <code>by</code>)</p></dd>
 
 
 <dt id="arg-include-cols">include_cols<a class="anchor" aria-label="anchor" href="#arg-include-cols"></a></dt>
-<dd><p>Character. ODS columns to add (<code>org_name</code>, <code>org_type</code>, <code>org_country</code>, <code>org_region_code</code>, <code>org_region</code>).
-Default adds none.</p></dd>
+<dd><p>Character. ODS columns to add. Default adds all. Choose from:
+<code>org_name</code>, <code>org_type</code>, <code>org_country</code>, <code>org_region_code</code>, <code>org_region</code>;
+the dates <code>org_legal_start</code>, <code>org_legal_end</code>, <code>org_operational_start</code> and <code>org_operational_end</code>;
+and <code>org_successors</code>, a list column holding the codes of the organisation's immediate
+successors (empty if none). A legal end date shows that an organisation has closed.
+ODS often gives start dates a default of 1 April or 1 October.</p></dd>
 
 
 <dt id="arg-on-missing">on_missing<a class="anchor" aria-label="anchor" href="#arg-on-missing"></a></dt>

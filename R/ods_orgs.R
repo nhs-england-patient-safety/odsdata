@@ -68,6 +68,24 @@ ods_lookup_orgs <- function(
   # dates come back as text (YYYY-MM-DD)
   orgs[ods_date_fields] <- purrr::map(orgs[ods_date_fields], as.Date)
 
+  # successor names: one lookup per distinct successor code, only when asked for
+  if ("org_successors" %in% fields) {
+    successor_names <- ods_lookup_codes(
+      ods_org_system,
+      unlist(orgs$org_successors),
+      label = "successor code",
+      on_missing = on_missing
+    )
+
+    # each row's successors as a small table of code and name
+    orgs$org_successors <- purrr::map(orgs$org_successors, \(codes) {
+      dplyr::tibble(
+        code = codes,
+        name = successor_names$name[match(codes, successor_names$code)]
+      )
+    })
+  }
+
   # role and region names are separate lookups, one call per distinct code, only when asked for
   if ("org_type" %in% fields) {
     orgs$org_type <- ods_names_for(

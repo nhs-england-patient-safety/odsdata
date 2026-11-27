@@ -38,8 +38,8 @@ column of \code{mapping} not used in \code{by})}
 \item{include_cols}{Character. ODS columns to add. Default adds all. Choose from:
 \code{org_name}, \code{org_type}, \code{org_country}, \code{org_region_code}, \code{org_region};
 the dates \code{org_legal_start}, \code{org_legal_end}, \code{org_operational_start} and \code{org_operational_end};
-and \code{org_successors}, a list column holding the codes of the organisation's immediate
-successors (empty if none). A legal end date shows that an organisation has closed.
+and \code{org_successors}, a list column holding, for each row, a tibble with the code and name of
+each immediate successor (empty if none). A legal end date shows that an organisation has closed.
 ODS often gives start dates a default of 1 April or 1 October.}
 
 \item{on_missing}{Character. What to do when codes are ambiguous, not found in ODS, or the

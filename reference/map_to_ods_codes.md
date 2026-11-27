@@ -63,10 +63,10 @@ map_to_ods_codes(
   `org_name`, `org_type`, `org_country`, `org_region_code`,
   `org_region`; the dates `org_legal_start`, `org_legal_end`,
   `org_operational_start` and `org_operational_end`; and
-  `org_successors`, a list column holding the codes of the
-  organisation's immediate successors (empty if none). A legal end date
-  shows that an organisation has closed. ODS often gives start dates a
-  default of 1 April or 1 October.
+  `org_successors`, a list column holding, for each row, a tibble with
+  the code and name of each immediate successor (empty if none). A legal
+  end date shows that an organisation has closed. ODS often gives start
+  dates a default of 1 April or 1 October.
 
 - on_missing:
 
